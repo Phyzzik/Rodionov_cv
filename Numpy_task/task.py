@@ -1,26 +1,26 @@
 #Задание 1
 
-# slovo = input("Введи 1 число, операцию (-, +, *, /), 2 число : ")
+slovo = input("Введи 1 число, операцию (-, +, *, /), 2 число : ")
 
-# razbit = slovo.split()
+razbit = slovo.split()
 
-# a = razbit[0]
-# znak = razbit[1]
-# b = razbit[2]
+a = razbit[0]
+znak = razbit[1]
+b = razbit[2]
 
-# a = int(a)
-# b = int(b)
+a = int(a)
+b = int(b)
 
-# if znak == "-":
-#     print(a - b)
-# elif znak == "+":
-#     print (a + b)
-# elif znak == "*":
-#     print (a * b)
-# elif znak == "/":
-#     print (a / b)
-# else:
-#     print("Такого нету введи из предложенных")
+if znak == "-":
+    print(a - b)
+elif znak == "+":
+     print (a + b)
+elif znak == "*":
+     print (a * b)
+elif znak == "/":
+    print (a / b)
+else:
+    print("Такого нету введи из предложенных")
 
 
 
@@ -56,9 +56,3 @@
 #    print(a)
 #else: 
 #    print("Ну так не бывает, выбери что то проще (я показал)")
-
-papka = open('world.txt', 'r')
-
-
-
-
