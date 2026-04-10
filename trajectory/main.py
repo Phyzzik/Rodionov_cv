@@ -1,28 +1,51 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import glob
+import os
+from skimage import measure
+from scipy.spatial import distance
 
-path = 'C:/Users/bqgk6/OneDrive/Документы/Компьютерное зрение/4_траектория/out/*.npy'
-files = sorted(glob.glob(path)) 
-y_coords = []
-x_coords = []
+folder_path = r'C:\Users\bqgk6\OneDrive\Документы\Компьютерное зрение\4_траектория\out'
+file_names = sorted([f for f in os.listdir(folder_path) if f.endswith('.npy')])
 
-for file in files:
-    img = np.load(file)
-    indices = np.argwhere(img > 0)
+trajectories = [[], [], []]
+last_points = None
+
+for file_name in file_names:
+    img = np.load(os.path.join(folder_path, file_name))
     
-    if indices.size > 0:
-        y_center, x_center = indices.mean(axis=0)
-        x_coords.append(x_center)
-        y_coords.append(y_center)
+    labels = measure.label(img > 0)
+    regions = measure.regionprops(labels)
+    
+    current_points = [np.array(r.centroid) for r in regions] # центры
+    
+    if last_points is None:
+        current_points.sort(key=lambda x: x[0])
+        last_points = current_points
+    else:
+        new_order = []
+        dists = distance.cdist(last_points, current_points)
+        
+        for row in dists:
+            idx = np.argmin(row)
+            new_order.append(current_points[idx])
+        
+        current_points = new_order
+        last_points = current_points
 
-plt.figure(figsize=(8, 8))
-plt.plot(x_coords, y_coords, marker='o', markersize=2, linestyle='-', color='blue')
+    for i in range(len(current_points)):
+        if i < 3: 
+            trajectories[i].append([current_points[i][1], current_points[i][0]])
 
-plt.xlim(0, 600)
-plt.ylim(600, 0) 
-plt.title("Траектория движения объекта")
+plt.figure(figsize=(10, 6))
+colors = ['r', 'g', 'b']
+labels = ['Траектория 1', 'Траектория 2', 'Траектория 3']
+
+for i in range(3):
+    traj = np.array(trajectories[i])
+    plt.plot(traj[:, 0], traj[:, 1], marker='o', markersize=2, linestyle='-', color=colors[i], label=labels[i])
+
 plt.xlabel("X")
-plt.ylabel("Y")
-plt.grid(True)
+plt.ylabel("Y") 
+plt.legend()
+plt.grid(True, linestyle='--', alpha=0.6)
 plt.show()
